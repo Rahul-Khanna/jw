@@ -1,0 +1,40 @@
+1.
+
+I am trying to predict watched percentage. While there is no guarantee that showing videos to a user that are predicted to be finished will result in the user staying on site longer (as if you keep showing shorter clips that might cause you have to high finish rates, but low time spent on site), if you take the predicted watched_pct and multiply it by the duration of the video you can get the predicted watched_duration and then you can show clips that will result in the highest watched_duration. The problem with predicting watched_duration is the fact that it’s constrained by the duration of the video, and so to incorporate that constraint into the learning function would require one to not use an out of the box solution. 
+
+I didn’t want to optimize around ad starts, as it might be the case that not all publishers are ad based serviced / they might not want to be profit maximizing right now (building customer satisfaction might be a goal).
+
+2.
+
+My initial idea was to use collaborative filtering to get a score as to how much a user would like a certain video. Then pass that into a RandomForestRegressor along with other metadata about the user and video to get a final prediction as to what the watched percentage would be. Unfortunately the package I was using for collaborate filtering didn’t really work out, and so I tried to add as much context to the model about past activity about the user and the video as features in order to predict watched_percentage. 
+
+I didn’t want to create multiple different models in this exercise, as I felt that would have been above the scope of the challenge (though I anyways went way over it in terms of time). 
+
+I have had a lot of success using the RandomForestClassifier and I assumed that there wouldn’t be a global linear fit to this data (both due to the nature of the problem, and because the data was coming from 100 different publishers), so I felt that if I had any hope in creating a global model for the whole dataset, the model itself should try and break down the data into smaller local problems to solve. This was further proven by the fact that regular regression and SVR techniques didn’t preform as well as the RandomForestRegressor. 
+
+My assumptions of the problem:
+1. I am assuming that the data coming is clean, and accurate. That the logs accurately represent the activities of users.
+
+2. I am assuming that their is not substantive bot traffic included in these logs, as their practices might cause even the best approaches to fail.
+
+3. I assume that the system can access context of a user trying to watch a video when trying to predict the outcome i.e. that things like browser info, and os and country can be accessed at the time of wanting a prediction.
+
+3.
+
+My model didn’t preform too well, with an average R^2 and adjusted R^2 of around 0.31. I split the data into 10 different training and test splits, and then took the average of the R^2 and adjusted R^2 on the test set.
+
+4.
+
+1. Make a mini model for each Publisher Category at the very least, and at the most each Publisher
+2. Add more information about how videos from a certain Publisher preform as features to the model
+3. Try out different combinations of ensemble methods
+4. Be more systematic about choosing with features to use
+5. Spend time doing correlation analysis between features the watched_pct
+6. Add some more textual information about each video to the features if possible
+7. Tune parameters of model more
+8. Get collaborative filtering portion of code to work
+
+5.
+
+I would create a micro service that would be listening for requests with the needed parameters and then would send back the predicted watched_pct. I would also have an endpoint that allowed for a rebuilding of the model, so that as new data got logged the model could be recqlucated every so often. Apart from the times of recalculation, the service would be able to return back a prediction very quickly as the model would have already been trained… the training is what takes long.
+

@@ -21,7 +21,8 @@ better results. I learned some really interesting things about the data through 
 are really bad features and a straight liner model greatly overfits and has little predictive power.
 
 3. final.ipynb : FINAL SUBMISSION... cleaned up code, and ran the process of calculating performance 10 times to ensure the
-result was not dependent on the split of the data, but was representative of the preformance of the model.
+result was not dependent on the split of the data, but was representative of the preformance of the model. Most chunks of code
+have some sort of comment as to what I am doing there.
 
 4. thoughts : answers to the questions in the prompt
 
